@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1 class="h3 mb-3">Add care log for {{ dog.name }}</h1>
+  <form method="post" class="card card-body shadow-sm">
+    {{ form.hidden_tag() }}
+    <div class="row g-3">
+      <div class="col-md-4">
+        {{ form.date.label(class="form-label") }}
+        {{ form.date(class="form-control") }}
+      </div>
+      <div class="col-md-4">
+        {{ form.type.label(class="form-label") }}
+        {{ form.type(class="form-select") }}
+      </div>
+      <div class="col-md-4">
+        {{ form.cost.label(class="form-label") }}
+        {{ form.cost(class="form-control") }}
+      </div>
+      <div class="col-12">
+        {{ form.notes.label(class="form-label") }}
+        {{ form.notes(class="form-control", rows="3") }}
+      </div>
+    </div>
+    <div class="mt-3">
+      <button class="btn btn-primary" type="submit">Save care log</button>
+      <a class="btn btn-link" href="{{ url_for('dogs.detail', dog_id=dog.id) }}">Cancel</a>
+    </div>
+  </form>
+{% endblock %}

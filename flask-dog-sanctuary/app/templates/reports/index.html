@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1 class="h3 mb-3">Reports</h1>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Dogs by status</h5>
+        </div>
+        <div class="card-body">
+          {% if dogs_by_status %}
+            <ul class="list-group list-group-flush">
+              {% for status, count in dogs_by_status %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>{{ status }}</span>
+                  <span class="fw-semibold">{{ count }}</span>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-muted mb-0">No active dogs.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Top dogs by care cost (90 days)</h5>
+        </div>
+        <div class="card-body">
+          {% if top_dogs %}
+            <ul class="list-group list-group-flush">
+              {% for name, total_cost in top_dogs %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>{{ name }}</span>
+                  <span class="fw-semibold">${{ "%.2f"|format(total_cost) }}</span>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-muted mb-0">No care cost data in last 90 days.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Monthly intakes</h5>
+        </div>
+        <div class="card-body">
+          <canvas id="intakeChart" height="180"></canvas>
+          <table class="table table-sm mt-3">
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th class="text-end">Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for month, count in monthly_intakes %}
+                <tr>
+                  <td>{{ month }}</td>
+                  <td class="text-end">{{ count }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Monthly care costs</h5>
+        </div>
+        <div class="card-body">
+          <canvas id="costChart" height="180"></canvas>
+          <table class="table table-sm mt-3">
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th class="text-end">Total cost</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for month, total in monthly_care_costs %}
+                <tr>
+                  <td>{{ month }}</td>
+                  <td class="text-end">${{ "%.2f"|format(total) }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-header bg-white">
+      <h5 class="mb-0">Monthly adoptions</h5>
+    </div>
+    <div class="card-body">
+      <table class="table table-sm mb-0">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th class="text-end">Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for month, count in monthly_adoptions %}
+            <tr>
+              <td>{{ month }}</td>
+              <td class="text-end">{{ count }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    const intakeLabels = {{ monthly_intakes|map(attribute=0)|list|tojson }};
+    const intakeData = {{ monthly_intakes|map(attribute=1)|list|tojson }};
+    const costLabels = {{ monthly_care_costs|map(attribute=0)|list|tojson }};
+    const costData = {{ monthly_care_costs|map(attribute=1)|list|tojson }};
+
+    const intakeChart = new Chart(
+      document.getElementById('intakeChart'),
+      {
+        type: 'bar',
+        data: {
+          labels: intakeLabels,
+          datasets: [{
+            label: 'Intakes',
+            data: intakeData,
+            backgroundColor: '#0d6efd'
+          }]
+        },
+        options: { responsive: true }
+      }
+    );
+
+    const costChart = new Chart(
+      document.getElementById('costChart'),
+      {
+        type: 'line',
+        data: {
+          labels: costLabels,
+          datasets: [{
+            label: 'Care costs',
+            data: costData,
+            borderColor: '#198754',
+            backgroundColor: 'rgba(25, 135, 84, 0.2)',
+            tension: 0.3,
+            fill: true
+          }]
+        },
+        options: { responsive: true }
+      }
+    );
+  </script>
+{% endblock %}

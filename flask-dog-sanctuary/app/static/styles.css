@@ -1,0 +1,12 @@
+body {
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+.card {
+  border: none;
+  border-radius: 0.75rem;
+}
+
+.navbar-brand {
+  font-weight: 600;
+}

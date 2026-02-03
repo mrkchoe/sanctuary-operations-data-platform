@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+      <h1 class="h3 mb-1">{{ dog.name }}</h1>
+      <p class="text-muted mb-0">{{ dog.breed }} · {{ dog.sex }} · Age {{ dog.estimated_age_years or "Unknown" }}</p>
+      <p class="mb-0">Status: <span class="badge bg-info text-dark">{{ dog.status }}</span></p>
+    </div>
+    <div class="text-end">
+      <a class="btn btn-outline-secondary mb-2" href="{{ url_for('dogs.edit_dog', dog_id=dog.id) }}">Edit dog</a>
+      <form method="post" action="{{ url_for('dogs.archive_dog', dog_id=dog.id) }}">
+        {{ csrf_token() }}
+        <button class="btn btn-outline-danger" type="submit">Archive</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h6 class="text-uppercase text-muted">Intake</h6>
+          <p class="mb-1">Date: {{ dog.intake_date }}</p>
+          <p class="mb-0">Source: {{ dog.intake_source }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h6 class="text-uppercase text-muted">Care Cost</h6>
+          <form class="mb-2" method="get">
+            <div class="row g-2 align-items-end">
+              <div class="col-6">
+                <label class="form-label small">Start</label>
+                <input type="date" class="form-control" name="cost_start" value="{{ cost_filters.start }}">
+              </div>
+              <div class="col-6">
+                <label class="form-label small">End</label>
+                <input type="date" class="form-control" name="cost_end" value="{{ cost_filters.end }}">
+              </div>
+            </div>
+            <button class="btn btn-sm btn-outline-primary mt-2" type="submit">Apply</button>
+          </form>
+          <p class="mb-0">Total: ${{ "%.2f"|format(total_cost) }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h6 class="text-uppercase text-muted">Actions</h6>
+          <a class="btn btn-sm btn-primary mb-2" href="{{ url_for('care.new_log', dog_id=dog.id) }}">Add care log</a>
+          <a class="btn btn-sm btn-outline-primary" href="{{ url_for('adoptions.new_adoption', dog_id=dog.id) }}">New adoption</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-lg-7">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Care logs</h5>
+        </div>
+        <div class="card-body">
+          {% if care_logs %}
+            <ul class="list-group list-group-flush">
+              {% for log in care_logs %}
+                <li class="list-group-item">
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      <strong>{{ log.type }}</strong> · {{ log.date }}
+                      {% if log.notes %}
+                        <div class="text-muted small">{{ log.notes }}</div>
+                      {% endif %}
+                    </div>
+                    <div>
+                      {% if log.cost %}
+                        ${{ "%.2f"|format(log.cost) }}
+                      {% else %}
+                        <span class="text-muted">No cost</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-muted mb-0">No care logs yet.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">Adoptions</h5>
+        </div>
+        <div class="card-body">
+          {% if dog.adoptions %}
+            <ul class="list-group list-group-flush">
+              {% for adoption in dog.adoptions %}
+                <li class="list-group-item">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <strong>{{ adoption.adopter_name }}</strong>
+                      <div class="text-muted small">{{ adoption.adopter_email }}</div>
+                      <div class="text-muted small">Status: {{ adoption.decision_status }}</div>
+                    </div>
+                    <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('adoptions.edit_adoption', adoption_id=adoption.id) }}">Edit</a>
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-muted mb-0">No adoption applications yet.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
