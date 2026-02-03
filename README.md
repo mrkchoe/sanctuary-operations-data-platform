@@ -1,6 +1,6 @@
-# flask-dog-sanctuary
+# sanctuary-operations-data-platform
 
-A polished, full-stack Flask portfolio app for a hypothetical dog sanctuary. It supports authentication, dog intake and care tracking, adoption workflows, and SQL-based reporting dashboards with a clean data model and secure access controls.
+A full-stack Flask portfolio app for a hypothetical dog sanctuary. It supports authentication, dog intake and care tracking, adoption workflows, and SQL-based reporting dashboards with a clean data model and secure access controls.
 
 ## Features
 - Secure authentication with hashed passwords and CSRF-protected forms
