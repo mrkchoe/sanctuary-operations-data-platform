@@ -21,13 +21,13 @@ Indexes are applied to `dogs.status`, `dogs.intake_date`, `care_logs.dog_id/date
 ## Local setup
 ```bash
 python3.11 -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Copy the environment template and set values:
+Copy the environment template and set values (optional for local dev; defaults use SQLite and a dev secret):
 ```bash
-cp .env.example .env
+cp .env.example .env   # Windows: copy .env.example .env
 ```
 
 ## Database and migrations
