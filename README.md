@@ -31,6 +31,8 @@ cp .env.example .env   # Windows: copy .env.example .env
 ```
 
 ## Database and migrations
+
+Run once to create tables (or the app will create them on first run):
 ```bash
 alembic upgrade head
 ```
@@ -39,6 +41,16 @@ alembic upgrade head
 ```bash
 python run.py
 ```
+
+## Example login and data
+
+On first run (empty database), the app creates tables, a demo account, and example data:
+
+| Email              | Password  |
+|--------------------|-----------|
+| staff@example.com   | demo1234  |
+
+Use it to sign in, or register a new account at /register. Example data includes five dogs (various statuses), care logs, and adoptions (one approved, one pending) so you can try the Dogs list, Reports, and adoption workflow.
 
 ## Run tests
 ```bash

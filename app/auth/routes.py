@@ -12,10 +12,13 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data.lower()).first()
-        if user and user.check_password(form.password.data):
-            login_user(user)
-            flash("Welcome back!", "success")
-            return redirect(url_for("dogs.list_dogs"))
+        try:
+            if user and user.check_password(form.password.data):
+                login_user(user)
+                flash("Welcome back!", "success")
+                return redirect(url_for("dogs.list_dogs"))
+        except (ValueError, TypeError):
+            pass  # bad stored hash
         flash("Invalid email or password.", "danger")
     return render_template("auth/login.html", form=form)
 

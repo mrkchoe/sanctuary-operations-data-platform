@@ -8,12 +8,12 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from app.extensions import db, login_manager
 
 
-class UserRole(enum.StrEnum):
+class UserRole(str, enum.Enum):
     ADMIN = "admin"
     STAFF = "staff"
 
 
-class DogStatus(enum.StrEnum):
+class DogStatus(str, enum.Enum):
     INTAKE = "INTAKE"
     AVAILABLE = "AVAILABLE"
     FOSTER = "FOSTER"
@@ -21,7 +21,7 @@ class DogStatus(enum.StrEnum):
     MEDICAL_HOLD = "MEDICAL_HOLD"
 
 
-class CareType(enum.StrEnum):
+class CareType(str, enum.Enum):
     FEEDING = "FEEDING"
     WALK = "WALK"
     MEDS = "MEDS"
@@ -30,7 +30,7 @@ class CareType(enum.StrEnum):
     GROOMING = "GROOMING"
 
 
-class DecisionStatus(enum.StrEnum):
+class DecisionStatus(str, enum.Enum):
     PENDING = "PENDING"
     APPROVED = "APPROVED"
     REJECTED = "REJECTED"

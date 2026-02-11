@@ -1,5 +1,14 @@
 from __future__ import with_statement
 
+import sys
+from pathlib import Path
+
+# Ensure the project root is on the path so "app" is this project's package,
+# not any installed package named "app".
+_project_root = Path(__file__).resolve().parent.parent
+if str(_project_root) not in sys.path:
+    sys.path.insert(0, str(_project_root))
+
 from logging.config import fileConfig
 
 from alembic import context
