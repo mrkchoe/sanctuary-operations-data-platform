@@ -2,8 +2,6 @@
 
 A full-stack Flask portfolio app for a hypothetical dog sanctuary. It supports authentication, dog intake and care tracking, adoption workflows, and SQL-based reporting dashboards with a clean data model and secure access controls.
 
-**Live overview (static):** [mrkchoe.github.io/sanctuary-operations-data-platform](https://mrkchoe.github.io/sanctuary-operations-data-platform/)
-
 ## Features
 - Secure authentication with hashed passwords and CSRF-protected forms
 - Role-based access control (admin vs staff)
@@ -57,10 +55,6 @@ pytest
 - All forms use CSRF protection via Flask-WTF.
 - RBAC enforces role permissions: staff can manage dogs/care/adoptions; admin is reserved for user-level operations.
 - Care logs store the user who created each entry for auditing.
-
-## GitHub Pages
-
-A static landing page is deployed to GitHub Pages on each push to `main` via [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml). The site is built from the `docs/` folder. Enable Pages in the repo under **Settings → Pages** with source **GitHub Actions**. The Flask app itself cannot run on GitHub Pages (static hosting only); use Render, Railway, or similar to host the full application.
 
 ## Disclaimer
 
