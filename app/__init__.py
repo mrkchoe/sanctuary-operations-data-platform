@@ -12,6 +12,7 @@ def _ensure_tables_and_demo_user(app: Flask) -> None:
     with app.app_context():
         db.create_all()
         from app.models import (
+            Adopter,
             Adoption,
             CareLog,
             CareType,
@@ -97,12 +98,14 @@ def _ensure_tables_and_demo_user(app: Flask) -> None:
                 ]
                 for cl in care_logs:
                     db.session.add(cl)
+                jane = Adopter(email="jane@example.com", name="Jane Smith", phone="555-0100")
+                john = Adopter(email="john@example.com", name="John Doe", phone=None)
+                db.session.add_all([jane, john])
+                db.session.flush()
                 db.session.add(
                     Adoption(
                         dog_id=daisy_id,
-                        adopter_name="Jane Smith",
-                        adopter_email="jane@example.com",
-                        adopter_phone="555-0100",
+                        adopter_id=jane.id,
                         application_date=date(y, m, 18),
                         decision_status=DecisionStatus.APPROVED,
                         decision_date=date(y, m, 19),
@@ -113,8 +116,7 @@ def _ensure_tables_and_demo_user(app: Flask) -> None:
                 db.session.add(
                     Adoption(
                         dog_id=luna_id,
-                        adopter_name="John Doe",
-                        adopter_email="john@example.com",
+                        adopter_id=john.id,
                         application_date=today,
                         decision_status=DecisionStatus.PENDING,
                         notes="Awaiting home check.",

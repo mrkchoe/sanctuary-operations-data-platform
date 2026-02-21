@@ -11,12 +11,16 @@ A full-stack Flask portfolio app for a hypothetical dog sanctuary. It supports a
 - Reporting dashboards for status counts, monthly trends, and top cost drivers
 
 ## Data model overview
+
+The schema is in **Boyce–Codd normal form (BCNF)**: every determinant is a candidate key. Adopter details (name, phone) are in a separate `adopters` table keyed by email so that adoption rows reference an adopter by ID only.
+
 - `users`: id, email (unique), password_hash, role, created_at
 - `dogs`: id, name, estimated_age_years, sex, breed, intake_date, intake_source, status, archived_at, created_at
 - `care_logs`: id, dog_id, user_id, date, type, notes, cost, created_at
-- `adoptions`: id, dog_id, adopter_name, adopter_email, adopter_phone, application_date, decision_status, decision_date, adoption_date, notes, created_at
+- `adopters`: id, email (unique), name, phone, created_at
+- `adoptions`: id, dog_id, adopter_id (FK → adopters), application_date, decision_status, decision_date, adoption_date, notes, created_at
 
-Indexes are applied to `dogs.status`, `dogs.intake_date`, `care_logs.dog_id/date`, and `adoptions.dog_id/decision_status`.
+Indexes are applied to `dogs.status`, `dogs.intake_date`, `care_logs.dog_id/date`, `adoptions.dog_id/decision_status`, and `adopters.email`.
 
 ## Local setup
 ```bash

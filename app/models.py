@@ -116,14 +116,25 @@ class CareLog(db.Model):
     user = db.relationship("User", back_populates="care_logs")
 
 
+class Adopter(db.Model):
+    """Adopter entity (BCNF: email is candidate key, determines name/phone)."""
+    __tablename__ = "adopters"
+
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(255), unique=True, nullable=False, index=True)
+    name = db.Column(db.String(120), nullable=False)
+    phone = db.Column(db.String(50), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    adoptions = db.relationship("Adoption", back_populates="adopter", lazy=True)
+
+
 class Adoption(db.Model):
     __tablename__ = "adoptions"
 
     id = db.Column(db.Integer, primary_key=True)
     dog_id = db.Column(db.Integer, db.ForeignKey("dogs.id"), nullable=False, index=True)
-    adopter_name = db.Column(db.String(120), nullable=False)
-    adopter_email = db.Column(db.String(255), nullable=False)
-    adopter_phone = db.Column(db.String(50), nullable=True)
+    adopter_id = db.Column(db.Integer, db.ForeignKey("adopters.id"), nullable=False, index=True)
     application_date = db.Column(db.Date, nullable=False)
     decision_status = db.Column(db.Enum(DecisionStatus), nullable=False, default=DecisionStatus.PENDING, index=True)
     decision_date = db.Column(db.Date, nullable=True)
@@ -132,3 +143,4 @@ class Adoption(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     dog = db.relationship("Dog", back_populates="adoptions")
+    adopter = db.relationship("Adopter", back_populates="adoptions")

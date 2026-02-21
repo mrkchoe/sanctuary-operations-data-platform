@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 
 from app.extensions import db
-from app.models import Adoption, CareLog, CareType, Dog, DogStatus, DecisionStatus
+from app.models import Adopter, Adoption, CareLog, CareType, Dog, DogStatus, DecisionStatus
 from tests.conftest import login
 
 
@@ -34,11 +34,12 @@ def test_reports_counts_and_sums(client, staff_user):
     )
     db.session.add(care_log)
 
+    adopter = Adopter(email="alex@example.com", name="Alex Doe", phone="555-1212")
+    db.session.add(adopter)
+    db.session.flush()
     adoption = Adoption(
         dog_id=dog.id,
-        adopter_name="Alex Doe",
-        adopter_email="alex@example.com",
-        adopter_phone="555-1212",
+        adopter_id=adopter.id,
         application_date=date(2025, 2, 1),
         decision_status=DecisionStatus.APPROVED,
         decision_date=date(2025, 2, 5),

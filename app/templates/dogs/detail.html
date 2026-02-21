@@ -105,8 +105,8 @@
                 <li class="list-group-item">
                   <div class="d-flex justify-content-between align-items-center">
                     <div>
-                      <strong>{{ adoption.adopter_name }}</strong>
-                      <div class="text-muted small">{{ adoption.adopter_email }}</div>
+                      <strong>{{ adoption.adopter.name }}</strong>
+                      <div class="text-muted small">{{ adoption.adopter.email }}</div>
                       <div class="text-muted small">Status: {{ adoption.decision_status }}</div>
                     </div>
                     <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('adoptions.edit_adoption', adoption_id=adoption.id) }}">Edit</a>
