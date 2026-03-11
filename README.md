@@ -1,77 +1,172 @@
 # sanctuary-operations-data-platform
 
-A full-stack Flask portfolio app for a hypothetical dog sanctuary. It supports authentication, dog intake and care tracking, adoption workflows, and SQL-based reporting dashboards with a clean data model and secure access controls.
+Full-stack data platform and web application modeling the operational workflows of an animal sanctuary. The system supports dog intake tracking, care logs, adoption workflows, and SQL-based reporting dashboards backed by a normalized relational schema and secure access controls.
+
+This project demonstrates how operational data can be structured, validated, and surfaced for organizational decision-making.
+
+---
+
+## Architecture
+
+Flask web application → relational database → SQL reporting dashboards
+
+Core components:
+
+- Flask backend for operational workflows and secure access  
+- Normalized relational schema for sanctuary data management  
+- Alembic migrations for schema versioning  
+- SQL queries and dashboards for operational reporting  
+- Authentication and role-based access control for secure data access  
+
+---
 
 ## Features
-- Secure authentication with hashed passwords and CSRF-protected forms
-- Role-based access control (admin vs staff)
-- Dog intake management, edits, and soft-archiving
-- Care logs with optional costs and per-dog cost rollups
-- Adoption applications with approval workflow
-- Reporting dashboards for status counts, monthly trends, and top cost drivers
 
-## Data model overview
+- Secure authentication with hashed passwords and CSRF-protected forms  
+- Role-based access control (admin vs staff)  
+- Dog intake management, edits, and soft-archiving  
+- Care logs with optional costs and per-dog cost rollups  
+- Adoption applications with approval workflow  
+- Reporting dashboards for status counts, monthly trends, and top cost drivers  
 
-The schema is in **Boyce–Codd normal form (BCNF)**: every determinant is a candidate key. Adopter details (name, phone) are in a separate `adopters` table keyed by email so that adoption rows reference an adopter by ID only.
+---
 
-- `users`: id, email (unique), password_hash, role, created_at
-- `dogs`: id, name, estimated_age_years, sex, breed, intake_date, intake_source, status, archived_at, created_at
-- `care_logs`: id, dog_id, user_id, date, type, notes, cost, created_at
-- `adopters`: id, email (unique), name, phone, created_at
-- `adoptions`: id, dog_id, adopter_id (FK → adopters), application_date, decision_status, decision_date, adoption_date, notes, created_at
+## Data Model Overview
 
-Indexes are applied to `dogs.status`, `dogs.intake_date`, `care_logs.dog_id/date`, `adoptions.dog_id/decision_status`, and `adopters.email`.
+The schema is designed in **Boyce–Codd normal form (BCNF)** so that every determinant is a candidate key.
 
-## Local setup
+Adopter details are stored in a separate `adopters` table keyed by email to avoid redundancy and ensure consistent references from adoption records.
+
+### Core Tables
+
+**users**  
+id, email (unique), password_hash, role, created_at
+
+**dogs**  
+id, name, estimated_age_years, sex, breed, intake_date, intake_source, status, archived_at, created_at
+
+**care_logs**  
+id, dog_id, user_id, date, type, notes, cost, created_at
+
+**adopters**  
+id, email (unique), name, phone, created_at
+
+**adoptions**  
+id, dog_id, adopter_id, application_date, decision_status, decision_date, adoption_date, notes, created_at
+
+### Indexing
+
+Indexes are applied to improve query performance:
+
+- dogs.status  
+- dogs.intake_date  
+- care_logs.dog_id  
+- care_logs.date  
+- adoptions.dog_id  
+- adoptions.decision_status  
+- adopters.email  
+
+---
+
+## Local Setup
+
+Create a Python environment and install dependencies:
+
 ```bash
 python3.11 -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Copy the environment template and set values (optional for local dev; defaults use SQLite and a dev secret):
+Copy the environment template:
+
 ```bash
 cp .env.example .env   # Windows: copy .env.example .env
 ```
 
-## Database and migrations
+Defaults are configured for local development using SQLite.
 
-Run once to create tables (or the app will create them on first run):
+---
+
+## Database and Migrations
+
+Apply database migrations:
+
 ```bash
 alembic upgrade head
 ```
 
-## Run the app
+Tables will also be created automatically on first application run if migrations have not been applied.
+
+---
+
+## Run the Application
+
 ```bash
 python run.py
 ```
 
-## Example login and data
+The application will start a local development server.
 
-On first run (empty database), the app creates tables, a demo account, and example data:
+---
 
-| Email              | Password  |
-|--------------------|-----------|
-| staff@example.com   | demo1234  |
+## Example Login and Demo Data
 
-Use it to sign in, or register a new account at /register. Example data includes five dogs (various statuses), care logs, and adoptions (one approved, one pending) so you can try the Dogs list, Reports, and adoption workflow.
+On first run with an empty database, the app creates:
 
-## Run tests
+- a demo account  
+- sample dogs  
+- example care logs  
+- adoption records  
+
+| Email | Password |
+| staff@example.com | demo1234 |
+
+Use the account to explore:
+
+- Dog intake and status management  
+- Care log tracking  
+- Adoption workflow  
+- Reporting dashboards  
+
+---
+
+## Run Tests
+
 ```bash
 pytest
 ```
 
-## Configuration notes
-- SQLite is the default for local development (`sqlite:///sanctuary.db`).
-- To use Postgres, set `DATABASE_URL` to your connection string.
-- `SECRET_KEY` must be set in production.
+---
 
-## Security notes
-- Passwords are stored using Werkzeug hashing.
-- All forms use CSRF protection via Flask-WTF.
-- RBAC enforces role permissions: staff can manage dogs/care/adoptions; admin is reserved for user-level operations.
-- Care logs store the user who created each entry for auditing.
+## Configuration Notes
+
+- SQLite is used by default for local development (`sqlite:///sanctuary.db`)  
+- To use Postgres, set `DATABASE_URL` to your connection string  
+- `SECRET_KEY` must be set in production  
+
+---
+
+## Security Notes
+
+- Passwords are stored using Werkzeug password hashing  
+- All forms use CSRF protection via Flask-WTF  
+- Role-based access control restricts sensitive operations  
+- Care logs record the user responsible for each entry for auditing purposes  
+
+---
+
+## Concepts Demonstrated
+
+- Relational schema design in **BCNF**  
+- Operational data modeling  
+- Role-based access control (RBAC)  
+- Secure authentication workflows  
+- Database migrations with Alembic  
+- SQL reporting for operational analytics  
+
+---
 
 ## Disclaimer
 
-This is a hypothetical demo project for portfolio use only. No real data is included.
+This is a hypothetical demo project created for portfolio purposes. No real data is included.
